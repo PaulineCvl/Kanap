@@ -1,6 +1,7 @@
+let datasInStorage = JSON.parse(localStorage.getItem('product'));
+
 // Récupération des données localStorage
 function getDatasInStorage () {
-    let datasInStorage = JSON.parse(localStorage.getItem('product'));
     for (let data of datasInStorage) {
         createCart(data);
     }
@@ -11,6 +12,7 @@ getDatasInStorage();
 function createCart(product) {
     const article = document.createElement('article');
     article.classList.add('cart__item');
+    article.dataset.id = product.id;
 
     const items = document.getElementById('cart__items');
     items.appendChild(article);
@@ -108,13 +110,13 @@ function totalQuantityPrices() {
 }
 totalQuantityPrices();
 
-
+// Changement de la quantité depuis le panier
 let inputQuantity = document.querySelectorAll('input.itemQuantity');
 for (let input of inputQuantity) {
     input.addEventListener('change', function() {
         totalQuantityPrices();
         input.dataset.value = input.value;
-        let datasInStorage = JSON.parse(localStorage.getItem('product'));
+
         for (let i = 0; i < datasInStorage.length; i++) {
             datasInStorage[i].quantity = inputQuantity[i].dataset.value;
         }
@@ -122,6 +124,25 @@ for (let input of inputQuantity) {
     });
 }
 
+// Suppression d'un produit dans le panier
+let deleteProduct = document.querySelectorAll('.deleteItem');
+for (let deleteButton of deleteProduct) {
+    deleteButton.addEventListener('click', function() {
+        let deleteProductInCart = deleteButton.closest('article');
+        deleteProductInCart.remove();
+
+        for (let i = 0; i < datasInStorage.length; i++) {
+                if(deleteProductInCart.dataset.id == datasInStorage[i].id) {
+                    datasInStorage.splice(i, 1);
+                    localStorage.setItem('product', JSON.stringify(datasInStorage));
+                }
+        }
+
+        totalQuantityPrices();
+
+    });
+
+}
 
 
 
