@@ -1,5 +1,3 @@
-let productsInCart = [];
-
 // Récupération de l'url de la page produit
 
 const queryStringUrl = window.location.search;
@@ -13,6 +11,7 @@ const productId = urlSearchParams.get('id');
 
 function detailsProduct (element) {
     const productImage = document.createElement('img');
+    productImage.setAttribute('id', 'imageItem');
     productImage.src = element.imageUrl;
     productImage.alt = element.altTxt;
 
@@ -59,39 +58,47 @@ function getDatas () {
 
 getDatas();
 
-// Comparaison de l'identifiant et de la couleur du produit ajouté avec ceux des produits du local storage
 function compareId(id, color) {
-    let arrayInCart = JSON.parse(localStorage.getItem('product'));
-    for (let product of arrayInCart) {
-        if(product.id == id && product.color == color) {
+    let datasInStorage = JSON.parse(localStorage.getItem('product'));
+    let arrayDatasInStorage = [];
+    for (let data of datasInStorage) {
+        arrayDatasInStorage.push(data);
+    }
+    for (let i = 0; i < arrayDatasInStorage.length; i++) {
+        console.log(arrayDatasInStorage[i].id);
+        if(id == arrayDatasInStorage[i].id && color == arrayDatasInStorage[i].color) {
             return true;
         }else{
             return false;
         }
     }
-            
 }
 
+
+// Comparaison de l'identifiant et de la couleur du produit ajouté avec ceux des produits du local storage
+
+
 // Ajouter un produit au panier
+let productsInCart = [];
+
 const buttonAddToCart = document.getElementById('addToCart');
 buttonAddToCart.addEventListener('click', function() {
     let productJson = {
         id : productId,
         name : title.innerHTML,
         price : price.innerHTML,
-        //image : productImage.src,
-        //altText : productImage.alt,
+        image : document.getElementById('imageItem').src,
+        altText : document.getElementById('imageItem').alt,
         quantity : parseInt(document.getElementById('quantity').value, 10),
         color : document.getElementById('colors').value,
     }
-    console.log(productJson.id);
 
     if(!localStorage.getItem('product')) {
         productsInCart.push(productJson);
         localStorage.setItem('product', JSON.stringify(productsInCart));
         buttonAddToCart.innerHTML = 'Produit ajouté !';
 
-    }else if(localStorage.getItem('product') && compareId(productJson.id, productJson.color)) {
+    }else if(localStorage.getItem('product') && compareId(productJson.id, productJson.color) == true) {
         let productInCart = localStorage.getItem('product');
         let productInCartJson = JSON.parse(productInCart);
         for (let i of productInCartJson) {
