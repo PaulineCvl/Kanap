@@ -132,10 +132,10 @@ for (let deleteButton of deleteProduct) {
         deleteProductInCart.remove();
 
         for (let i = 0; i < datasInStorage.length; i++) {
-                if(deleteProductInCart.dataset.id == datasInStorage[i].id) {
-                    datasInStorage.splice(i, 1);
-                    localStorage.setItem('product', JSON.stringify(datasInStorage));
-                }
+            if(deleteProductInCart.dataset.id == datasInStorage[i].id) {
+                datasInStorage.splice(i, 1);
+                localStorage.setItem('product', JSON.stringify(datasInStorage));
+            }
         }
 
         totalQuantityPrices();
