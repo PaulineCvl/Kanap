@@ -144,5 +144,62 @@ for (let deleteButton of deleteProduct) {
 
 }
 
+// Vérification des données du formulaire
+//Prénom
+let firstName = document.getElementById('firstName');
+let validFirstName = /([^0-9][a-zéèêàçï\s\-])+/gi;
+let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
+firstName.addEventListener('change', function() {
+    if(!validFirstName.test(firstName.value)) {
+        firstNameErrorMsg.innerHTML = 'Prénom non valide';
+    }else{
+        firstNameErrorMsg.innerHTML = '';
+    }
+})
+//Nom
+let lastName = document.getElementById('lastName');
+let validLastName = /([^0-9][a-zéèêàçï\s\-])+/gi;
+let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
+lastName.addEventListener('change', function() {
+    if(!validLastName.test(lastName.value)) {
+        lastNameErrorMsg.innerHTML = 'Nom non valide';
+    }else{
+        lastNameErrorMsg.innerHTML = '';
+    }
+})
+//Adresse
+let customerAddress = document.getElementById('address');
+let validCustomerAddress = /[0-9]+\s[a-z]+\s[a-zéèêçàï\s\-]+/gi;
+let addressErrorMsg = document.getElementById('addressErrorMsg');
+customerAddress.addEventListener('change', function() {
+    if(!validCustomerAddress.test(customerAddress.value)) {
+        addressErrorMsg.innerHTML = 'Adresse non valide';
+    }else{
+        addressErrorMsg.innerHTML = '';
+    }
+})
+//Ville
+let customerCity = document.getElementById('city');
+let validCustomerCity = /([^0-9][a-zéèêàçï\s\-])+/gi;
+let cityErrorMsg = document.getElementById('cityErrorMsg');
+customerCity.addEventListener('change', function() {
+    console.log(customerCity.value.match(validCustomerCity));
+    if(!validCustomerCity.test(customerCity.value)) {
+        cityErrorMsg.innerHTML = 'Ville non valide';
+    }else{
+        cityErrorMsg.innerHTML = '';
+    }
+})
+//E-mail
+let customerEmail = document.getElementById('email');
+let validCustomerEmail = /[a-z0-9\.\-\_]+@[a-z]+\.[a-z]{2,3}/gi;
+let emailErrorMsg = document.getElementById('emailErrorMsg');
+customerEmail.addEventListener('change', function() {
+    if(!validCustomerEmail.test(customerEmail.value)) {
+        emailErrorMsg.innerHTML = 'E-mail non valide';
+    }else{
+        emailErrorMsg.innerHTML = '';
+    }
+})
 
-
+//
