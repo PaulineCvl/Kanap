@@ -10,6 +10,9 @@ const productId = urlSearchParams.get('id');
 // Insertion des informations dans la page produit
 
 function detailsProduct (element) {
+    const tabTitle = document.querySelector('title');
+    tabTitle.innerText = element.name;
+
     const productImage = document.createElement('img');
     productImage.setAttribute('id', 'imageItem');
     productImage.src = element.imageUrl;
@@ -79,11 +82,11 @@ buttonAddToCart.addEventListener('click', function() {
         color : document.getElementById('colors').value,
     }
 
-    let datasInStorage = JSON.parse(localStorage.getItem('product'));
+    let datasInStorage = JSON.parse(localStorage.getItem('product-ID'));
 
-    if(!localStorage.getItem('product')) {
+    if(!localStorage.getItem('product-ID')) {
         productsInCart.push(productJson);
-        localStorage.setItem('product', JSON.stringify(productsInCart));
+        localStorage.setItem('product-ID', JSON.stringify(productsInCart));
         buttonAddToCart.innerHTML = 'Produit ajouté !';
 
     }else{
@@ -91,6 +94,9 @@ buttonAddToCart.addEventListener('click', function() {
         function isIdInCart () {
             for (let i = 0; i < datasInStorage.length; i++) {
                 if(productJson.id == datasInStorage[i].id && productJson.color == datasInStorage[i].color) {
+                    datasInStorage[i].quantity += addQuantity;
+                    localStorage.setItem('product-ID', JSON.stringify(datasInStorage));
+                    buttonAddToCart.innerHTML = 'Produit ajouté !';
                     return true;
                 }
             }
@@ -99,15 +105,13 @@ buttonAddToCart.addEventListener('click', function() {
             console.log(datasInStorage.quantity);
             for (let i = 0; i < datasInStorage.length; i++) {
                 if(productJson.id == datasInStorage[i].id && productJson.color == datasInStorage[i].color) {
-                    datasInStorage[i].quantity += addQuantity;
-                    localStorage.setItem('product', JSON.stringify(datasInStorage));
-                    buttonAddToCart.innerHTML = 'Produit ajouté !';
+                 
                 }
             }
 
         }else{
             datasInStorage.push(productJson);
-            localStorage.setItem('product', JSON.stringify(datasInStorage));
+            localStorage.setItem('product-ID', JSON.stringify(datasInStorage));
             buttonAddToCart.innerHTML = 'Produit ajouté !';
         }
 
