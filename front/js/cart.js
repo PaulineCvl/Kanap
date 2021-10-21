@@ -194,26 +194,29 @@ let datasInStorage = JSON.parse(localStorage.getItem('product-ID'));
                 email : customerEmail.value,
             }
             localStorage.setItem('contact', JSON.stringify(contact));
-            sendOrder();
+            orderElements();
         })
     }
 
-    let contact = JSON.parse(localStorage.getItem('contact'));
+    function orderElements (){
+        let contact = JSON.parse(localStorage.getItem('contact'));
+
+        //Création d'un tableau "products"
+        let products = [];
+        for (let i = 0; i < datasInStorage.length; i++) {
+            products.push(datasInStorage[i].id);
+        }
+
+        //Envoi des données vers l'API
+        const order = {
+            contact,
+            products
+        }
+        sendOrder(order);
+    }
     
 
-    //Création d'un tableau "products"
-    let products = [];
-    for (let i = 0; i < datasInStorage.length; i++) {
-        products.push(datasInStorage[i].id);
-    }
-
-    //Envoi des données vers l'API
-    const order = {
-        contact,
-        products
-    }
-
-    function sendOrder() {
+    function sendOrder(order) {
         fetch('http://localhost:3000/api/products/order', {
             method: 'POST',
             headers: {

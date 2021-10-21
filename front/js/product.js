@@ -8,37 +8,35 @@ const urlSearchParams = new URLSearchParams(queryStringUrl);
 const productId = urlSearchParams.get('id');
 
 // Insertion des informations dans la page produit
+const tabTitle = document.querySelector('title');
+const imgSection = document.querySelector('.item__img')
+const title = document.getElementById('title');
+const price = document.getElementById('price');
+const description = document.getElementById('description');
+const colorChoice = document.getElementById('colors');
 
 function detailsProduct (element) {
-    const tabTitle = document.querySelector('title');
     tabTitle.innerText = element.name;
 
-    const productImage = document.createElement('img');
+    let productImage = document.createElement('img');
     productImage.setAttribute('id', 'imageItem');
     productImage.src = element.imageUrl;
     productImage.alt = element.altTxt;
 
-    const imgSection = document.querySelector('.item__img')
     imgSection.appendChild(productImage);
     
-    const title = document.getElementById('title');
     title.innerHTML = element.name;
-
-    const price = document.getElementById('price');
     price.innerHTML = element.price;
-
-    const description = document.getElementById('description');
     description.innerHTML = element.description;
 
-    const firstColorChoice = document.createElement('option');
+    let firstColorChoice = document.createElement('option');
     firstColorChoice.value = element.colors[0];
     firstColorChoice.innerHTML = element.colors[0];
 
-    const secondColorChoice = document.createElement('option');
+    let secondColorChoice = document.createElement('option');
     secondColorChoice.value = element.colors[1];
     secondColorChoice.innerHTML = element.colors[1];
 
-    const colorChoice = document.getElementById('colors');
     colorChoice.appendChild(firstColorChoice);
     colorChoice.appendChild(secondColorChoice);
 }
@@ -58,14 +56,7 @@ function getDatas () {
         detailsProduct(datas);
     });
 }
-
 getDatas();
-
-
-
-
-// Comparaison de l'identifiant et de la couleur du produit ajouté avec ceux des produits du local storage
-
 
 // Ajouter un produit au panier
 let productsInCart = [];
@@ -102,10 +93,11 @@ buttonAddToCart.addEventListener('click', function() {
             }
         }
         if(isIdInCart() == true) {
-            console.log(datasInStorage.quantity);
             for (let i = 0; i < datasInStorage.length; i++) {
                 if(productJson.id == datasInStorage[i].id && productJson.color == datasInStorage[i].color) {
-                 
+                    datasInStorage[i].quantity += addQuantity;
+                    localStorage.setItem('product-ID', JSON.stringify(datasInStorage));
+                    buttonAddToCart.innerHTML = 'Produit ajouté !';
                 }
             }
 
