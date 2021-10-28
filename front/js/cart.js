@@ -20,6 +20,8 @@ let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
 let addressErrorMsg = document.getElementById('addressErrorMsg');
 let cityErrorMsg = document.getElementById('cityErrorMsg');
 let emailErrorMsg = document.getElementById('emailErrorMsg');
+// Récupération du formulaire
+let submitForm = document.querySelector('.cart__order__form');
 // Récupération du bouton "Commander"
 const submitButton = document.querySelector('.cart__order__form__submit input');
 
@@ -135,7 +137,7 @@ function deleteItem() {
 }
 
 // Vérification des données du formulaire
-function listenDatas(data, validData, dataErrorMsg) {
+function checkDatas(data, validData, dataErrorMsg) {
     if (data.value != '') {
         let isValid = true;
         if (!validData.test(data.value)) {
@@ -151,16 +153,22 @@ function listenDatas(data, validData, dataErrorMsg) {
 
 function listenFields(data, validData, dataErrorMsg) {
     data.addEventListener('change', function () {
-        listenDatas(data, validData, dataErrorMsg);
+        checkDatas(data, validData, dataErrorMsg);
+        if (validAllFields()) {
+            orderRequest();
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
+        }
     })
 }
 
 function validAllFields() {
-    let isValidFirstName = listenDatas(firstName, validName, firstNameErrorMsg);
-    let isValidLastName = listenDatas(lastName, validName, lastNameErrorMsg);
-    let isValidAdress = listenDatas(customerAddress, validCustomerAddress, addressErrorMsg);
-    let isValidCity = listenDatas(customerCity, validName, cityErrorMsg);
-    let isValidEmail = listenDatas(customerEmail, validCustomerEmail, emailErrorMsg);
+    let isValidFirstName = checkDatas(firstName, validName, firstNameErrorMsg);
+    let isValidLastName = checkDatas(lastName, validName, lastNameErrorMsg);
+    let isValidAdress = checkDatas(customerAddress, validCustomerAddress, addressErrorMsg);
+    let isValidCity = checkDatas(customerCity, validName, cityErrorMsg);
+    let isValidEmail = checkDatas(customerEmail, validCustomerEmail, emailErrorMsg);
     if (isValidFirstName && isValidLastName && isValidAdress && isValidCity && isValidEmail) {
         return true;
     } else {
@@ -168,25 +176,7 @@ function validAllFields() {
     }
 }
 
-
-function validateOrder(confirmOrder) {
-    submitButton.href = 'confirmation.html?id=' + confirmOrder;
-}
-
-function submitOrder() {
-    let validFields = validAllFields();
-
-    submitButton.addEventListener('click', function (event) {
-        event.preventDefault();
-        if (validAllFields()) {
-            orderRequest();
-        } else {
-            console.log('validFields false');
-        }
-    })
-}
-
-//Création d'un objet "contact"
+// Création des éléments pour envoi des données
 function orderRequest() {
     let contact = {
         firstName: firstName.value,
@@ -196,20 +186,17 @@ function orderRequest() {
         email: customerEmail.value,
     }
 
-    //Création d'un tableau "products"
     let products = [];
     for (let i = 0; i < datasInStorage.length; i++) {
         products.push(datasInStorage[i].id);
     }
 
-    //Envoi des données vers l'API
     const order = {
         contact,
         products
     }
 
-    let newOrder = sendOrder(order);
-    console.log(newOrder);
+    sendOrder(order);
 }
 
 
@@ -227,9 +214,16 @@ function sendOrder(order) {
             }
         })
         .then(function (data) {
-            validateOrder(data.orderId);
-            console.log(data.orderId);
+            localStorage.setItem('orderId', data.orderId);
         })
+}
+
+
+function submitOrder() {
+    submitButton.addEventListener('click', function() {
+        let confirmationURL = 'confirmation.html';
+        submitForm.action = confirmationURL;
+    })
 }
 
 function isCart() {
@@ -262,15 +256,15 @@ function isCart() {
         listenFields(customerEmail, validCustomerEmail, emailErrorMsg);
         submitOrder();
 
-
     } else {
         //Affichage du numéro de commande dans la page de confirmation
         const putOrderId = document.getElementById('orderId');
 
-        const queryStringUrl = window.location.search
+        /*const queryStringUrl = window.location.search
         const urlSearchParams = new URLSearchParams(queryStringUrl);
-        const newOrderId = urlSearchParams.get('id');
+        const newOrderId = urlSearchParams.get('id');*/
 
+        newOrderId = localStorage.getItem('orderId');
         putOrderId.innerHTML = newOrderId;
         localStorage.clear();
     }
