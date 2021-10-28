@@ -4,9 +4,6 @@ const datasInStorage = JSON.parse(localStorage.getItem('product-ID'));
 // Récupération des quantités des différents produits du panier
 const listOfQuantity = document.getElementsByClassName('itemQuantity');
 
-// Récupération des boutons "supprimer"
-const deleteProduct = document.querySelectorAll('.deleteItem');
-
 // Récupération des input du formulaire
 const firstName = document.querySelector('#firstName');
 const lastName = document.querySelector('#lastName');
@@ -153,6 +150,8 @@ function changeQuantity() {
 
 // Suppression d'un produit dans le panier
 function deleteItem() {
+    let deleteProduct = document.querySelectorAll('.deleteItem');
+
     for (let deleteButton of deleteProduct) {
         deleteButton.addEventListener('click', function () {
             let deleteProductInCart = deleteButton.closest('article');
