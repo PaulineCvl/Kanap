@@ -1,29 +1,41 @@
 // Récupération des données localStorage
-let datasInStorage = JSON.parse(localStorage.getItem('product-ID'));
+const datasInStorage = JSON.parse(localStorage.getItem('product-ID'));
+
 // Récupération des quantités des différents produits du panier
-let listOfQuantity = document.getElementsByClassName('itemQuantity');
+const listOfQuantity = document.getElementsByClassName('itemQuantity');
+
 // Récupération des boutons "supprimer"
-let deleteProduct = document.querySelectorAll('.deleteItem');
+const deleteProduct = document.querySelectorAll('.deleteItem');
+
 // Récupération des input du formulaire
-let firstName = document.querySelector('#firstName');
-let lastName = document.querySelector('#lastName');
-let customerAddress = document.querySelector('#address');
-let customerCity = document.querySelector('#city');
-let customerEmail = document.querySelector('#email');
+const firstName = document.querySelector('#firstName');
+const lastName = document.querySelector('#lastName');
+const customerAddress = document.querySelector('#address');
+const customerCity = document.querySelector('#city');
+const customerEmail = document.querySelector('#email');
+
 // Regex de validation des données du formulaire
-let validName = /[a-zéèêàçï-\s]+$/i;
-let validCustomerAddress = /[0-9]+\s[a-z]+\s[a-zéèêçàï\s\-]+/i;
-let validCustomerEmail = /[a-z0-9\.\-\_]+@[a-z]+\.[a-z]{2,3}/i;
+const validName = /[a-zéèêàçï-\s]+$/i;
+const validCustomerAddress = /[0-9]+\s[a-z]+\s[a-zéèêçàï\s\-]+/i;
+const validCustomerEmail = /[a-z0-9\.\-\_]+@[a-z]+\.[a-z]{2,3}/i;
+
 // Récupération des balises pour insérer un message d'erreur lors de la validation des données du formulaire
-let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
-let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
-let addressErrorMsg = document.getElementById('addressErrorMsg');
-let cityErrorMsg = document.getElementById('cityErrorMsg');
-let emailErrorMsg = document.getElementById('emailErrorMsg');
+const firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
+const lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
+const addressErrorMsg = document.getElementById('addressErrorMsg');
+const cityErrorMsg = document.getElementById('cityErrorMsg');
+const emailErrorMsg = document.getElementById('emailErrorMsg');
+
 // Récupération du formulaire
-let submitForm = document.querySelector('.cart__order__form');
+const submitForm = document.querySelector('.cart__order__form');
+
 // Récupération du bouton "Commander"
 const submitButton = document.querySelector('.cart__order__form__submit input');
+
+// Récupération de la balise pour insérer le numéro de commande
+const putOrderId = document.getElementById('orderId');
+const newOrderId = localStorage.getItem('orderId');
+
 
 // Création d'un ajout d'article dans le panier
 function createCart(product) {
@@ -52,7 +64,6 @@ function createCart(product) {
 
     let settings = document.createElement('div');
     settings.classList.add('cart__item__content__settings');
-
 
     content.appendChild(contentTitlePrice);
     content.appendChild(settings);
@@ -94,6 +105,13 @@ function createCart(product) {
     settingsDelete.appendChild(deleteItem);
 }
 
+// Ajout des produits du localStorage dans le panier
+function addItemsToCart() {
+    for (let data of datasInStorage) {
+        createCart(data);
+    }
+}
+
 // Calcul de la quantité totale de produits et du prix total
 function totalQuantityPrices() {
     //Quantité totale
@@ -118,6 +136,21 @@ function totalQuantityPrices() {
     totalPrice.innerHTML = sumPrices;
 }
 
+// Changement de la quantité depuis le panier
+function changeQuantity() {
+    for (let input of listOfQuantity) {
+        input.addEventListener('change', function () {
+            totalQuantityPrices();
+            input.dataset.value = input.value;
+
+            for (let i = 0; i < datasInStorage.length; i++) {
+                datasInStorage[i].quantity = listOfQuantity[i].dataset.value;
+            }
+            localStorage.setItem('product-ID', JSON.stringify(datasInStorage));
+        });
+    }
+}
+
 // Suppression d'un produit dans le panier
 function deleteItem() {
     for (let deleteButton of deleteProduct) {
@@ -136,7 +169,7 @@ function deleteItem() {
     }
 }
 
-// Vérification des données du formulaire
+// Validation des données du formulaire
 function checkDatas(data, validData, dataErrorMsg) {
     if (data.value != '') {
         let isValid = true;
@@ -151,19 +184,7 @@ function checkDatas(data, validData, dataErrorMsg) {
     }
 }
 
-function listenFields(data, validData, dataErrorMsg) {
-    data.addEventListener('change', function () {
-        checkDatas(data, validData, dataErrorMsg);
-        if (validAllFields()) {
-            orderRequest();
-            submitButton.disabled = false;
-        } else {
-            submitButton.disabled = true;
-        }
-    })
-}
-
-function validAllFields() {
+function checkAllDatas() {
     let isValidFirstName = checkDatas(firstName, validName, firstNameErrorMsg);
     let isValidLastName = checkDatas(lastName, validName, lastNameErrorMsg);
     let isValidAdress = checkDatas(customerAddress, validCustomerAddress, addressErrorMsg);
@@ -174,6 +195,27 @@ function validAllFields() {
     } else {
         return false;
     }
+}
+
+// Prise en compte des données renseignées dans le formulaire
+function listenFields(data, validData, dataErrorMsg) {
+    data.addEventListener('change', function () {
+        checkDatas(data, validData, dataErrorMsg);
+        if (checkAllDatas()) {
+            orderRequest();
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
+        }
+    })
+}
+
+function listenAllFields() {
+    listenFields(firstName, validName, firstNameErrorMsg);
+    listenFields(lastName, validName, lastNameErrorMsg);
+    listenFields(customerAddress, validCustomerAddress, addressErrorMsg);
+    listenFields(customerCity, validName, cityErrorMsg);
+    listenFields(customerEmail, validCustomerEmail, emailErrorMsg);
 }
 
 // Création des éléments pour envoi des données
@@ -199,7 +241,7 @@ function orderRequest() {
     sendOrder(order);
 }
 
-
+// Récupération de l'ID de la commande
 function sendOrder(order) {
     fetch('http://localhost:3000/api/products/order', {
         method: 'POST',
@@ -218,7 +260,7 @@ function sendOrder(order) {
         })
 }
 
-
+// Validation de la commande
 function submitOrder() {
     submitButton.addEventListener('click', function() {
         let confirmationURL = 'confirmation.html';
@@ -226,47 +268,26 @@ function submitOrder() {
     })
 }
 
+// Affichage du numéro de commande dans la page de confirmation
+function confirmOrder() {
+    putOrderId.innerHTML = newOrderId;
+    localStorage.clear();
+}
+
 function isCart() {
 
-    if (document.getElementById('cartAndFormContainer')) {
-        for (let data of datasInStorage) {
-            createCart(data);
-        }
-
+    // Fonctions à appliquer sur la page panier
+    if (document.getElementById('cartAndFormContainer')) {   
+        addItemsToCart();
         totalQuantityPrices();
-
-        // Changement de la quantité depuis le panier
-        for (let input of listOfQuantity) {
-            input.addEventListener('change', function () {
-                totalQuantityPrices();
-                input.dataset.value = input.value;
-
-                for (let i = 0; i < datasInStorage.length; i++) {
-                    datasInStorage[i].quantity = listOfQuantity[i].dataset.value;
-                }
-                localStorage.setItem('product-ID', JSON.stringify(datasInStorage));
-            });
-        }
-
+        changeQuantity();
         deleteItem();
-        listenFields(firstName, validName, firstNameErrorMsg);
-        listenFields(lastName, validName, lastNameErrorMsg);
-        listenFields(customerAddress, validCustomerAddress, addressErrorMsg);
-        listenFields(customerCity, validName, cityErrorMsg);
-        listenFields(customerEmail, validCustomerEmail, emailErrorMsg);
+        listenAllFields();
         submitOrder();
 
+    // Fonctions à appliquer sur la page de confirmation
     } else {
-        //Affichage du numéro de commande dans la page de confirmation
-        const putOrderId = document.getElementById('orderId');
-
-        /*const queryStringUrl = window.location.search
-        const urlSearchParams = new URLSearchParams(queryStringUrl);
-        const newOrderId = urlSearchParams.get('id');*/
-
-        newOrderId = localStorage.getItem('orderId');
-        putOrderId.innerHTML = newOrderId;
-        localStorage.clear();
+        confirmOrder();
     }
 }
 isCart();

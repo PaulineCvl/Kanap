@@ -1,5 +1,6 @@
-// Création d'une fiche produit
+let productsURL = 'http://localhost:3000/api/products';
 
+// Création d'une fiche produit
 function createProduct (element) {
     const card = document.createElement('a');
     card.href = 'product.html?id=' + element._id;
@@ -26,9 +27,8 @@ function createProduct (element) {
 }
 
 // Récupération des données de l'API
-
-function getDatas () {
-    fetch('http://localhost:3000/api/products')
+function getDatas (URL) {
+    fetch(URL)
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -43,5 +43,5 @@ function getDatas () {
     });
 }
 
-getDatas();
+getDatas(productsURL);
 
