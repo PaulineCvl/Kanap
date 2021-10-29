@@ -5,7 +5,10 @@ const queryStringUrl = window.location.search;
 const urlSearchParams = new URLSearchParams(queryStringUrl);
 const productId = urlSearchParams.get('id');
 
-// Insertion des informations dans la page produit
+// URL de l'API d'un produit
+let productsURL = 'http://localhost:3000/api/products/'+ productId;
+
+// Récupération des balises pour insérer les informations du produit
 const tabTitle = document.querySelector('title');
 const imgSection = document.querySelector('.item__img');
 const title = document.getElementById('title');
@@ -19,6 +22,7 @@ let productsInCart = [];
 // Bouton "ajouter au panier"
 const buttonAddToCart = document.getElementById('addToCart');
 
+// Insertion des informations dans la page produit
 function detailsProduct (element) {
     tabTitle.innerText = element.name;
 
@@ -46,8 +50,8 @@ function detailsProduct (element) {
 }
 
 // Récupération des données d'un produit
-function getDatas () {
-    fetch('http://localhost:3000/api/products/'+ productId)
+function getDatas (URL) {
+    fetch(URL)
     .then(function(response) {
         if(response.ok) {
             return response.json();
@@ -116,5 +120,5 @@ function addToCart() {
     });
 }
 
-getDatas();
+getDatas(productsURL);
 addToCart();

@@ -4,6 +4,12 @@ const datasInStorage = JSON.parse(localStorage.getItem('product-ID'));
 // Récupération des quantités des différents produits du panier
 const listOfQuantity = document.getElementsByClassName('itemQuantity');
 
+// Balise pour l'insertion de la quantité totale de produits
+let totalQuantity = document.getElementById('totalQuantity');
+
+// Balise pour l'insertion du prix total
+let totalPrice = document.getElementById('totalPrice');
+
 // Récupération des input du formulaire
 const firstName = document.querySelector('#firstName');
 const lastName = document.querySelector('#lastName');
@@ -112,24 +118,18 @@ function addItemsToCart() {
 // Calcul de la quantité totale de produits et du prix total
 function totalQuantityPrices() {
     //Quantité totale
-    let totalQuantity = document.getElementById('totalQuantity');
     let sumQuantity = 0;
-
     for (let i = 0; i < listOfQuantity.length; i++) {
         sumQuantity += parseInt(listOfQuantity[i].value);
     }
-
     totalQuantity.innerHTML = sumQuantity;
 
     //Prix total
-    let totalPrice = document.getElementById('totalPrice');
     let listOfPrices = document.querySelectorAll('.cart__item__content__titlePrice p');
     let sumPrices = 0;
-
     for (let i = 0; i < listOfPrices.length; i++) {
         sumPrices += parseInt(listOfPrices[i].innerHTML) * listOfQuantity[i].value;
     }
-
     totalPrice.innerHTML = sumPrices;
 }
 
@@ -274,9 +274,8 @@ function confirmOrder() {
 }
 
 function isCart() {
-
     // Fonctions à appliquer sur la page panier
-    if (document.getElementById('cartAndFormContainer')) {   
+    if (document.getElementById('cartAndFormContainer') && localStorage.getItem('product-ID')) {   
         addItemsToCart();
         totalQuantityPrices();
         changeQuantity();
@@ -285,7 +284,7 @@ function isCart() {
         submitOrder();
 
     // Fonctions à appliquer sur la page de confirmation
-    } else {
+    } else if(localStorage.getItem('orderId')) {
         confirmOrder();
     }
 }
