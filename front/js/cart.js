@@ -44,7 +44,6 @@ const queryStringUrl = window.location.search;
 const urlSearchParams = new URLSearchParams(queryStringUrl);
 const newOrderId = urlSearchParams.get('id');
 
-
 // Création d'un ajout d'article dans le panier
 function createCart(product) {
     let article = document.createElement('article');
@@ -291,10 +290,10 @@ function isCart() {
         changeQuantity();
         deleteItem();
         listenAllFields();
-        submitOrder();
+        //submitOrder();
 
     // Fonctions à appliquer sur la page de confirmation
-    } else {
+    } else if(document.querySelector('.confirmation')) {
         confirmOrder();
     }
 }
