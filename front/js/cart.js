@@ -267,6 +267,20 @@ function sendOrder(order) {
         })
 }
 
+/* //Récupération de l'ID de la commande avec XML HTTP REQUEST
+function sendOrder(order) {
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.open('POST', 'http://localhost:3000/api/products/order');
+    httpRequest.setRequestHeader('Content-Type', 'application/json');
+    httpRequest.send(JSON.stringify(order));
+    httpRequest.onreadystatechange = function() {
+        if(httpRequest.readyState == 4) {
+            let serverResponse = JSON.parse(httpRequest.responseText);
+            submitOrder(serverResponse.orderId)
+        }
+    }
+} */
+
 // Validation de la commande
 function submitOrder(orderId) {
     submitButton.addEventListener('click', function() {
@@ -290,7 +304,6 @@ function isCart() {
         changeQuantity();
         deleteItem();
         listenAllFields();
-        //submitOrder();
 
     // Fonctions à appliquer sur la page de confirmation
     } else if(document.querySelector('.confirmation')) {

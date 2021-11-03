@@ -43,5 +43,20 @@ function getDatas (URL) {
     });
 }
 
-getDatas(productsURL);
 
+//Récupération des données de l'API avec XML HTTP REQUEST
+/*function getDatas(URL) {
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.open('GET', URL);
+    httpRequest.send();
+    httpRequest.onreadystatechange = function() {
+        if(httpRequest.readyState == 4) {
+            let serverResponse = JSON.parse(httpRequest.responseText);
+            for (let data of serverResponse) {
+                createProduct(data);
+            }
+        }
+    }
+}*/
+
+getDatas(productsURL);

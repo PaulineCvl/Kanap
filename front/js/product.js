@@ -64,6 +64,19 @@ function getDatas (URL) {
     });
 }
 
+//Récupération des données de l'API avec XML HTTP REQUEST
+/*function getDatas(URL) {
+    let httpRequest = new XMLHttpRequest();
+    httpRequest.open('GET', URL);
+    httpRequest.send();
+    httpRequest.onreadystatechange = function() {
+        if(httpRequest.readyState == 4) {
+            let serverResponse = JSON.parse(httpRequest.responseText);
+            detailsProduct(serverResponse);
+        }
+    }
+}*/
+
 // Vérification des produits ajoutés au localStorage
 function isIdInCart(datasInStorage, productJson) {
     let isInCart = false;
