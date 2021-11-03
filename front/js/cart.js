@@ -37,7 +37,12 @@ const submitButton = document.querySelector('.cart__order__form__submit input');
 
 // Récupération de la balise pour insérer le numéro de commande
 const putOrderId = document.getElementById('orderId');
-const newOrderId = localStorage.getItem('orderId');
+// Récupération de l'url de la page produit
+const queryStringUrl = window.location.search;
+
+// Extraction de l'id
+const urlSearchParams = new URLSearchParams(queryStringUrl);
+const newOrderId = urlSearchParams.get('id');
 
 
 // Création d'un ajout d'article dans le panier
@@ -79,6 +84,10 @@ function createCart(product) {
     let priceProduct = document.createElement('p');
     priceProduct.innerHTML = product.price + ' €';
     contentTitlePrice.appendChild(priceProduct);
+
+    let productColor = document.createElement('p');
+    productColor.innerHTML = product.color;
+    settings.appendChild(productColor);
 
     let settingsQuantity = document.createElement('div');
     settingsQuantity.classList.add('cart__item__content__settings__quantity');
@@ -255,15 +264,16 @@ function sendOrder(order) {
             }
         })
         .then(function (data) {
-            localStorage.setItem('orderId', data.orderId);
+            submitOrder(data.orderId);
         })
 }
 
 // Validation de la commande
-function submitOrder() {
+function submitOrder(orderId) {
     submitButton.addEventListener('click', function() {
-        let confirmationURL = 'confirmation.html';
+        let confirmationURL = 'confirmation.html?id=' + orderId;
         submitForm.action = confirmationURL;
+        submitForm.method = 'post';
     })
 }
 
@@ -284,7 +294,7 @@ function isCart() {
         submitOrder();
 
     // Fonctions à appliquer sur la page de confirmation
-    } else if(localStorage.getItem('orderId')) {
+    } else {
         confirmOrder();
     }
 }
