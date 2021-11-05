@@ -35,6 +35,9 @@ const submitForm = document.querySelector('.cart__order__form');
 // Récupération du bouton "Commander"
 const submitButton = document.querySelector('.cart__order__form__submit input');
 
+// URL API
+const orderURL = 'http://localhost:3000/api/products/order';
+
 // Récupération de la balise pour insérer le numéro de commande
 const putOrderId = document.getElementById('orderId');
 // Récupération de l'url de la page produit
@@ -46,6 +49,7 @@ const newOrderId = urlSearchParams.get('id');
 
 // Création d'un ajout d'article dans le panier
 function createCart(product) {
+    // Création de la section pour afficher les détails d'un article
     let article = document.createElement('article');
     article.classList.add('cart__item');
     article.dataset.id = product.id;
@@ -53,6 +57,7 @@ function createCart(product) {
     let items = document.getElementById('cart__items');
     items.appendChild(article);
 
+    // Ajout de l'image
     let imageItemContent = document.createElement('div');
     imageItemContent.classList.add('cart__item__img');
 
@@ -63,6 +68,7 @@ function createCart(product) {
     imageItemContent.appendChild(imageItem);
     article.appendChild(imageItemContent);
 
+    // Ajout de la section pour ajouter le nom du produit et son prix
     let content = document.createElement('div');
     content.classList.add('cart__item__content');
 
@@ -76,18 +82,22 @@ function createCart(product) {
     content.appendChild(settings);
     article.appendChild(content);
 
+    // Ajout du nom du produit
     let titleProduct = document.createElement('h2');
     titleProduct.innerHTML = product.name;
     contentTitlePrice.appendChild(titleProduct);
 
+    // Ajout du prix du produit
     let priceProduct = document.createElement('p');
     priceProduct.innerHTML = product.price + ' €';
     contentTitlePrice.appendChild(priceProduct);
 
+    // Ajout de la couleur choisie pour le produit
     let productColor = document.createElement('p');
     productColor.innerHTML = product.color;
     settings.appendChild(productColor);
 
+    // Ajout de la quantité choisie
     let settingsQuantity = document.createElement('div');
     settingsQuantity.classList.add('cart__item__content__settings__quantity');
     settings.appendChild(settingsQuantity);
@@ -106,6 +116,7 @@ function createCart(product) {
     setProductQuantity.dataset.value = parseInt(product.quantity, 10);
     settingsQuantity.appendChild(setProductQuantity);
 
+    // Ajout du bouton "supprimer"
     let settingsDelete = document.createElement('div');
     settingsDelete.classList.add('cart__item__content__settings__delete');
     settings.appendChild(settingsDelete);
@@ -191,6 +202,7 @@ function checkDatas(data, validData, dataErrorMsg) {
     }
 }
 
+// Vérification de toutes les données du formulaire
 function checkAllDatas() {
     let isValidFirstName = checkDatas(firstName, validName, firstNameErrorMsg);
     let isValidLastName = checkDatas(lastName, validName, lastNameErrorMsg);
@@ -217,6 +229,7 @@ function listenFields(data, validData, dataErrorMsg) {
     })
 }
 
+// Ecoute de toutes les données remplies
 function listenAllFields() {
     listenFields(firstName, validName, firstNameErrorMsg);
     listenFields(lastName, validName, lastNameErrorMsg);
@@ -248,9 +261,9 @@ function orderRequest() {
     sendOrder(order);
 }
 
-// Récupération de l'ID de la commande
+// Récupération du numéro de la commande
 function sendOrder(order) {
-    fetch('http://localhost:3000/api/products/order', {
+    fetch(orderURL, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -267,10 +280,10 @@ function sendOrder(order) {
         })
 }
 
-/* //Récupération de l'ID de la commande avec XML HTTP REQUEST
+/* //Récupération du numéro de la commande avec XML HTTP REQUEST
 function sendOrder(order) {
     let httpRequest = new XMLHttpRequest();
-    httpRequest.open('POST', 'http://localhost:3000/api/products/order');
+    httpRequest.open('POST', orderURL);
     httpRequest.setRequestHeader('Content-Type', 'application/json');
     httpRequest.send(JSON.stringify(order));
     httpRequest.onreadystatechange = function() {

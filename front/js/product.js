@@ -16,7 +16,7 @@ const price = document.getElementById('price');
 const description = document.getElementById('description');
 const colorChoice = document.getElementById('colors');
 
-// Tableau de produits à ajouter au panier
+// Tableau vide pour insérer les produits à ajouter au panier
 let productsInCart = [];
 
 // Bouton "ajouter au panier"
@@ -24,8 +24,10 @@ const buttonAddToCart = document.getElementById('addToCart');
 
 // Insertion des informations dans la page produit
 function detailsProduct (element) {
+    // Ajout du nom du produit dans l'onglet de la page web
     tabTitle.innerText = element.name;
 
+    // Ajout de l'image
     let productImage = document.createElement('img');
     productImage.setAttribute('id', 'imageItem');
     productImage.src = element.imageUrl;
@@ -33,10 +35,12 @@ function detailsProduct (element) {
 
     imgSection.appendChild(productImage);
     
+    // Ajout du titre, du prix et de la description du produit
     title.innerHTML = element.name;
     price.innerHTML = element.price;
     description.innerHTML = element.description;
 
+    // Ajout des choix de couleurs
     let firstColorChoice = document.createElement('option');
     firstColorChoice.value = element.colors[0];
     firstColorChoice.innerHTML = element.colors[0];
@@ -77,7 +81,7 @@ function getDatas (URL) {
     }
 }*/
 
-// Vérification des produits ajoutés au localStorage
+// Parcours des produits ajoutés au localStorage pour vérifier si le produit à ajouter a déjà été ajouté
 function isIdInCart(datasInStorage, productJson) {
     let isInCart = false;
     for (let i = 0; i < datasInStorage.length; i++) {
@@ -98,6 +102,7 @@ function addNewProduct(productsArray, newProduct) {
 // Ajouter un produit au panier
 function addToCart() {
     buttonAddToCart.addEventListener('click', function() {
+        // Création d'un objet JSON regroupant les informations du produit à ajouter au panier
         let productJson = {
             id : productId,
             name : title.innerHTML,
@@ -108,14 +113,18 @@ function addToCart() {
             color : document.getElementById('colors').value,
         }
 
+        // Récupération de la liste des produits ajoutés au localStorage
         let datasInStorage = JSON.parse(localStorage.getItem('product-ID'));
 
+        // Si le localStorage est vide : ajouter un nouveau produit
         if(!localStorage.getItem('product-ID')) {
             addNewProduct(productsInCart, productJson);
 
         }else{
             let addQuantity = parseInt(document.getElementById('quantity').value, 10);
 
+            // Si le localStorage n'est pas vide ET QUE le produit à ajouter est déjà dans le localStorage (même ID et même couleur)
+            // ALORS : incrémenter la quantité du produit dans le localStorage
             if(isIdInCart(datasInStorage, productJson)) {
                 for (let i = 0; i < datasInStorage.length; i++) {
                     if(productJson.id == datasInStorage[i].id && productJson.color == datasInStorage[i].color) {
@@ -124,7 +133,8 @@ function addToCart() {
                         buttonAddToCart.innerHTML = 'Produit ajouté !';
                     }
                 }
-
+            // Si le localStorage n'est pas vide ET QUE le produit à ajouter N'EST PAS dans le localStorage
+            //ALORS : ajouter un nouveau produit
             }else{
                 addNewProduct(datasInStorage, productJson);
             }

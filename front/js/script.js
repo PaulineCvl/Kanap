@@ -2,11 +2,14 @@ let productsURL = 'http://localhost:3000/api/products';
 
 // Création d'une fiche produit
 function createProduct (element) {
+    // Création du lien sur la fiche produit
     const card = document.createElement('a');
     card.href = 'product.html?id=' + element._id;
 
+    // Création de la carte pour un produit
     const article = document.createElement('article');
 
+    // Création des éléments pour un produit : image, titre, description
     const newProductImage = document.createElement('img');
     newProductImage.src = element.imageUrl;
     newProductImage.alt = element.altTxt;
@@ -19,6 +22,7 @@ function createProduct (element) {
     newProductDescription.innerHTML = element.description;
     newProductDescription.classList.add('productDescription');
 
+    // Ajout des éléments d'un produit dans la carte
     article.appendChild(newProductImage);
     article.appendChild(newProductName);
     article.appendChild(newProductDescription);
